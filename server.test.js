@@ -1,7 +1,7 @@
 // Do not modify this file
 const uuid = require('uuid');
-const request = require('supertest');
-// const server = require('./server'); // Students' server implementation
+// const request = require('supertest');
+const server = require('./server'); // Students' server implementation
 const server = require('./solution'); // Students' server implementation
 
 describe('Wordle Server', () => {
