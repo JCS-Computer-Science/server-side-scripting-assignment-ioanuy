@@ -350,4 +350,4 @@ describe('Wordle Server', () => {
         test('status code should be 404', () => expect(res.status).toBe(404))
         test('responds with an error message', () => expect(res.body.error).toBeDefined())
     });
-})
+});
