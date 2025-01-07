@@ -116,6 +116,33 @@ server.post("/guess", async (req, res) => {
     res.status(201).send({ gameState: session });
 });
 
+
+server.delete("/reset", (req, res) => {
+    const ID = req.query.sessionID;
+
+
+    if (!ID) {
+        res.status(400).send({ error: "ID is missing" });
+        return;
+    }
+    if (activeSessions[ID]) {
+        activeSessions[ID] = {
+            wordToGuess: undefined,
+            guesses: [],
+            wrongLetters: [],
+            closeLetters: [],
+            rightLetters: [],
+            remainingGuesses: 6,
+            gameOver: false,
+        };
+        res.status(200).send({ gameState: activeSessions[ID] });
+    } else {
+        res.status(404).send({ error: "ID doesn't match any active sessions" });
+    }
+});
+
+
+
 // Do not remove this line. This allows the test suite to start
 // multiple instances of your server on different ports
 module.exports = server;
