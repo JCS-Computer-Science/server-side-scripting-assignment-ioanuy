@@ -12,7 +12,7 @@ async function wordGen() {
     const results = await response.json();
 
     return results[0];
-}
+};
 
 server.get("/newgame", async (req, res) => {
     const newID = uuid.v4();
@@ -62,21 +62,23 @@ server.post("/guess", async (req, res) => {
     if (!userGuess === "phase" && dictionaryResults.title === "No Definitions Found") {
         res.status(400).send({ error: "Not a real word" });
         return;
-    }
+    };
+
     if (!sessionID) {
         res.status(400).send({ error: "Session ID is missing" });
         return;
-    }
+    };
+
     const session = activeSessions[sessionID];
     if (!session) {
         res.status(404).send({ error: "Session doesn't exist" });
         return;
-    }
+    };
+
     if (userGuess.length !== 5) {
         res.status(400).send({ error: "Guess must be 5 letters" });
         return;
-    }
-
+    };
 
     const realValue = session.wordToGuess.split("");
     const guess = [];
@@ -91,23 +93,28 @@ server.post("/guess", async (req, res) => {
         if (!letter.match(/[a-z]/)) {
             res.status(400).send({ error: "must contain letters" });
             return;
-        }
+        };
+    
         if (letter === realValue[i]) {
             correctness = "RIGHT";
             if (!session.rightLetters.includes(letter)) session.rightLetters.push(letter);
             if (session.closeLetters.includes(letter)) {
                 session.closeLetters.splice(session.closeLetters.indexOf(letter), 1);
             }
+
         } else if (realValue.includes(letter)) {
             correctness = "CLOSE";
             if (!session.closeLetters.includes(letter) && !session.rightLetters.includes(letter)) {
                 session.closeLetters.push(letter);
             }
+
         } else {
+
             if (!session.wrongLetters.includes(letter)) session.wrongLetters.push(letter);
-        }
+        };
+
         guess.push({ value: letter, result: correctness });
-    }
+    };
 
 
     session.guesses.push(guess);
@@ -120,7 +127,6 @@ server.post("/guess", async (req, res) => {
 
 server.delete("/reset", (req, res) => {
     const ID = req.query.sessionID;
-
 
     if (!ID) {
         res.status(400).send({ error: "ID is missing" });
@@ -139,7 +145,7 @@ server.delete("/reset", (req, res) => {
         res.status(200).send({ gameState: activeSessions[ID] });
     } else {
         res.status(404).send({ error: "ID doesn't match any active sessions" });
-    }
+    };
 });
 
 server.delete("/delete", (req, res) => {
@@ -149,14 +155,14 @@ server.delete("/delete", (req, res) => {
         res.status(400).send({error: "ID is Missing"})
         return;
     }
-    
+
     if(activeSessions[sessionId]){
         delete activeSessions[sessionId];
         res.status(204).send();
 
     }else{
         res.status(404).send({error: "Session does not exist"});
-    }
+    };
 });
 
 // Do not remove this line. This allows the test suite to start
