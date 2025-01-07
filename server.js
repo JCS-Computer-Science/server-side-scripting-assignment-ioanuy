@@ -10,6 +10,7 @@ let activeSessions = {};
 async function wordGen() {
     const response = await fetch("https://random-word-api.vercel.app/api?words=1&length=5");
     const results = await response.json();
+
     return results[0];
 }
 
@@ -17,6 +18,7 @@ server.get("/newgame", async (req, res) => {
     const newID = uuid.v4();
     let ans = await wordGen();
     const answer = req.query.answer;
+
     if (answer) ans = answer;
 
 
@@ -36,7 +38,6 @@ server.get("/newgame", async (req, res) => {
 
 server.get("/gamestate", (req, res) => {
     const sessionID = req.query.sessionID;
-
 
     if (!sessionID) {
         res.status(400).send({ error: "Session ID is missing" });
@@ -141,7 +142,22 @@ server.delete("/reset", (req, res) => {
     }
 });
 
+server.delete("/delete", (req, res) => {
+    const sessionId = req.query.sessionID;
 
+    if(!sessionId) {
+        res.status(400).send({error: "ID is Missing"})
+        return;
+    }
+    
+    if(activeSessions[sessionId]){
+        delete activeSessions[sessionId];
+        res.status(204).send();
+
+    }else{
+        res.status(404).send({error: "Session does not exist"});
+    }
+});
 
 // Do not remove this line. This allows the test suite to start
 // multiple instances of your server on different ports
